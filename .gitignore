@@ -1,0 +1,13 @@
+cypress.env.json
+node_modules/
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress/.session/
+session_mecanismo.json
+.auth/
+recon_dom.json
+recon_tickets_perfil.json
+benchmark_results.json
+security_inspection.json
+endpoints_detectados.json

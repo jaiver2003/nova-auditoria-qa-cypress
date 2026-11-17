@@ -1,0 +1,45 @@
+{
+  "baseUrl": "https://nova.uniautonoma.edu.co",
+  "endpoints": [
+    {
+      "method": "POST",
+      "url": "https://nova.uniautonoma.edu.co/api/login/",
+      "auth": "none"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/users/perfil/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/tickets/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/tickets/activity-feed/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/dependencies/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/lista/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/certificates/lista/",
+      "auth": "Bearer"
+    },
+    {
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/geo/departamentos/",
+      "auth": "Cookie"
+    }
+  ]
+}
