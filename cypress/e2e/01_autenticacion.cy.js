@@ -49,6 +49,8 @@ describe('Módulo 01: Autenticación y Control de Sesión (Estudiante)', () => {
 
   it('CP-03 (Negativo): Intento de login con campos obligatorios vacíos', () => {
     cy.visit('/login');
+    let loginRequests = 0;
+    cy.intercept('POST', '**/api/login/', () => { loginRequests += 1; });
 
     // Enviar formulario sin digitar credenciales
     cy.get('form button[type=submit]').click();
@@ -56,6 +58,7 @@ describe('Módulo 01: Autenticación y Control de Sesión (Estudiante)', () => {
     // Validar los mensajes de error reactivos de la aplicación
     cy.contains('El correo es requerido').should('be.visible');
     cy.contains('La contraseña es requerida').should('be.visible');
+    cy.then(() => expect(loginRequests, 'Peticiones de login hasta mostrar las validaciones').to.eq(0));
 
     // Verificar permanencia en la página de login
     cy.location('pathname').should('include', '/login');
@@ -68,7 +71,7 @@ describe('Módulo 01: Autenticación y Control de Sesión (Estudiante)', () => {
     cy.contains('button', /^Salir$/i).should('be.visible').click();
 
     // Verificar redirección inmediata a /login o landing
-    cy.location('pathname', { timeout: 10000 }).should('match', /(\/login|\/)/);
+    cy.location('pathname', { timeout: 10000 }).should('match', /^(\/login\/?|\/)$/);
 
     // Intentar acceder directamente a /estudiante luego de salir
     cy.visit('/estudiante', { failOnStatusCode: false });

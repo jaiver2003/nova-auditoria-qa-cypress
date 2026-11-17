@@ -59,6 +59,7 @@ describe('Módulo 02: Gestión de Tickets - Rol Estudiante', () => {
 
     // Cancelar para no enviar ni ensuciar datos
     cy.contains('button', /^Cancelar$/i).click({ force: true });
+    cy.contains('Enviar ticket a un área').should('not.exist');
   });
 
   it('CP-07 (Negativo): Intento de envío del formulario de nuevo ticket con campos vacíos', () => {
@@ -69,6 +70,8 @@ describe('Módulo 02: Gestión de Tickets - Rol Estudiante', () => {
     cy.wait(1500);
 
     // Intentar enviar el formulario sin diligenciar los campos obligatorios
+    let ticketRequests = 0;
+    cy.intercept('POST', '**/api/pqrs/tickets/**', () => { ticketRequests += 1; });
     cy.contains('button', /Enviar ticket/i).click({ force: true });
     cy.wait(1000);
 
@@ -76,5 +79,6 @@ describe('Módulo 02: Gestión de Tickets - Rol Estudiante', () => {
     cy.contains('Selecciona un área destino').should('be.visible');
     cy.contains('El asunto es obligatorio').should('be.visible');
     cy.contains('La descripción es obligatoria').should('be.visible');
+    cy.then(() => expect(ticketRequests, 'Solicitudes de creación hasta mostrar las validaciones').to.eq(0));
   });
 });

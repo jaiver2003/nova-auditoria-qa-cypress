@@ -1,11 +1,14 @@
 // Soporte global E2E
 import './commands';
 
-// Evitar que errores JS secundarios de librerías externas o third-party cancelen las pruebas
+// Ignorar únicamente la notificación benigna de ResizeObserver originada por el motor del navegador
 Cypress.on('uncaught:exception', (err) => {
-  // Ignorar errores no críticos de ResizeObserver o scripts de Google GSI
-  if (err.message.includes('ResizeObserver') || err.message.includes('Script error')) {
+  if (
+    err.message.includes('ResizeObserver loop limit exceeded') ||
+    err.message.includes('ResizeObserver loop completed with undelivered notifications')
+  ) {
     return false;
   }
-  return false;
+  // No suprimir ninguna otra excepción ni errores generales de script/aplicación
+  return true;
 });
