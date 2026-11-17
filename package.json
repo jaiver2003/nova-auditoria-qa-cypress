@@ -1,15 +1,15 @@
 {
-  "name": "nova-qa-final",
-  "version": "1.0.0",
-  "description": "",
+  "name": "nova-qa-rectoria",
+  "version": "2.0.0",
+  "description": "Auditoría QA — UniDoc / Rol Rectoría (Gestión de Avales) sobre la plataforma NOVA. Pruebas funcionales con Cypress.",
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
     "cy:open": "cypress open",
     "test:evidence": "node scripts/run-functional.cjs"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["qa", "cypress", "nova", "unidoc", "rectoria", "calidad-software"],
+  "author": "Grupo 1 - Calidad de Software II",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

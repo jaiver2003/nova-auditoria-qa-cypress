@@ -1,0 +1,5 @@
+GET https://nova.uniautonoma.edu.co/convocatorias-app/inicio-sesion
+Accept: text/html
+
+GET https://nova.uniautonoma.edu.co/convocatorias-app
+Accept: text/html

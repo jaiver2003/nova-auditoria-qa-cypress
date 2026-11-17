@@ -1,202 +1,204 @@
 # INFORME DE PRUEBAS DE RENDIMIENTO (CARGA Y ESTRÉS)
-## PLATAFORMA INSTITUCIONAL NOVA — UNIVERSIDAD AUTÓNOMA DEL CAUCA
-### ASIGNATURA: CALIDAD DE SOFTWARE II — TRABAJO FINAL (ENTREGABLE 2)
+## Plataforma NOVA — Módulo UniDoc · Rol **Rectoría**
+### Calidad de Software II — Trabajo Final · Entregable 2 de 3
 
 ---
 
-## 1. Portada y Control de Versiones
+## 1. Portada y control de versiones
 
-### 1.1 Información General
-- **Institución:** Corporación Universitaria Autónoma del Cauca (Uniautónoma)
-- **Facultad:** Ingeniería — Programa de Ingeniería de Software
-- **Asignatura:** Calidad de Software II
-- **Docente:** Jefferson Andrés Muñoz
-- **Firma Auditora QA:** Nova Quality Assurance Solutions (Grupo 1)
-- **Plataforma Evaluada:** Núcleo de Operaciones Virtuales Académicas (NOVA) — `https://nova.uniautonoma.edu.co/`
-- **Aplicación / Módulo:** Tickets (Módulo de PQRS y Soporte Institucional)
-- **Rol Evaluado:** Usuario Básico (Estudiante: JAIVER / Ticket: `TI-20261113-7BEB1D57`)
-- **Fecha de Evaluación:** 16 y 17 de noviembre de 2026 (Entrega: 17 de noviembre de 2026)
-- **Grupo Académico:** Grupo 1
-- **Integrantes del Equipo:**
-  - Jaiver Muñoz Muñoz (`jaiver.munoz@uniautonoma.edu.co`)
-  - Martha Isabel España Gonzales (`martha.espana@uniautonoma.edu.co`)
-- **Repositorio Git Oficial:** `c:\Users\USUARIO\Desktop\nova-qa-final` (Rama: `main`)
-- **Enlace a Repositorio Remoto:** https://github.com/jaiver2003/nova-auditoria-qa-cypress
+| Campo | Detalle |
+|---|---|
+| **Institución** | Corporación Universitaria Autónoma del Cauca (Uniautónoma) |
+| **Asignatura** | Calidad de Software II · **Docente:** Jefferson Andrés Muñoz |
+| **Firma QA (rol asumido)** | Grupo 1 — Aseguramiento de Calidad |
+| **Sistema bajo prueba** | NOVA — `https://nova.uniautonoma.edu.co/` |
+| **Aplicación / módulo** | UniDoc — Convocatorias y Gestión de Avales |
+| **Rol evaluado** | **Rectoría** |
+| **Fecha de entrega** | 17 de noviembre de 2026 |
 
-### 1.2 Historial de Versiones del Documento
+**Integrantes:** Jaiver Muñoz Muñoz · Martha Isabel España Gonzales
 
-| Versión | Fecha | Autor(es) | Descripción del Cambio |
-| :---: | :---: | :--- | :--- |
-| **1.0.0** | 16/11/2026 | Jaiver Muñoz / Martha España | Levantamiento de métricas empíricas de carga y redacción preliminar. |
-| **1.1.0** | 17/11/2026 | Jaiver Muñoz / Martha España | Estructuración formal según las 13 secciones de la guía del curso, integración de criterios de aceptación, análisis de cuellos de botella y unificación con roles Rectoría y Estudiante. |
+**Historial de versiones**
+
+| Versión | Fecha | Autor | Cambio |
+|---|---|---|---|
+| 1.0 | 16/11/2026 | Equipo G1 | Medición preliminar del servidor (módulo Tickets, herramienta Node). |
+| 2.0 | 16/11/2026 | Equipo G1 | Corrección de alcance a UniDoc–Rectoría; plan JMeter/Vegeta. |
+| 3.0 | 17/11/2026 | Equipo G1 | **Ejecución real con Vegeta** sobre endpoints públicos de UniDoc (4 niveles); resultados, gráficas y análisis. |
 
 ---
 
-## 2. Resumen Ejecutivo
-Se ejecutó una auditoría de rendimiento (pruebas de carga controlada y estrés progresivo) sobre la API REST de la plataforma **NOVA** para el rol **Usuario Básico (Estudiante)**, evaluando la capacidad de respuesta y estabilidad del servidor bajo cuatro niveles crecientes de demanda (5, 12, 25 y 40 peticiones por segundo - RPS).
+## 2. Resumen ejecutivo
 
-**Conclusiones Principales:**
-- **Capacidad Óptima Soportada:** La plataforma opera con excelente estabilidad y tiempos de respuesta sub-segundo hasta **12 RPS** continuos (p50: 163 ms, p95: 219 ms, 0% errores).
-- **Punto de Inicio de Degradación:** Comienza a manifestarse a partir de los **17-20 RPS reales** (Nivel 3). Aunque la tasa de errores fue del 0%, la latencia media se disparó a 5,869 ms y el percentil 95 alcanzó los 9,243 ms debido a la saturación de los workers WSGI de Django y el encolamiento en Nginx.
-- **Punto de Ruptura y Saturación:** A **40 RPS** (Nivel 4), el sistema colapsa operativamente: el rendimiento real se estanca en 23.97 RPS y el **81.33% de las peticiones fallan con HTTP 504 Gateway Timeout**.
-- **Recomendación General:** La aplicación está lista para operar en condiciones cotidianas de bajo tráfico, pero **NO está preparada para eventos de alta concurrencia** (como matrículas simultáneas o cierres de notas). Se requiere con urgencia implementar pooling de conexiones a base de datos (pgBouncer), caché de catálogos en Redis y escalamiento horizontal de workers.
+Se ejecutaron pruebas de carga y estrés con **Vegeta** sobre los **endpoints públicos de entrada** del rol **Rectoría** en UniDoc (pantalla de acceso y portal de convocatorias), en 4 niveles ascendentes (5, 10, 15 y 20 peticiones por segundo).
 
----
+**Conclusiones principales:**
 
-## 3. Objetivos y Alcance
+- La capa de entrada de UniDoc **soportó los 4 niveles sin un solo error**: 1 000 peticiones en total, **100 % con código 200** y **0 % de fallos**.
+- Los tiempos de respuesta se mantuvieron **bajos y estables**: p95 entre **100 y 127 ms** en todos los niveles, muy por debajo de los umbrales de aceptación.
+- El **throughput real siguió al objetivo** con ≥ 99,6 % de ajuste en cada nivel.
+- **No se alcanzó un punto de degradación ni de ruptura** dentro del tope prudente de 20 RPS. Esto es coherente: estos endpoints públicos son livianos frente a los endpoints autenticados con base de datos (ver referencia del Anexo A, que colapsó a 40 RPS).
 
-### 3.1 Objetivo General
-Determinar la capacidad máxima de procesamiento, los tiempos de respuesta bajo distintos volúmenes de concurrencia y el punto de quiebre de la plataforma NOVA para el rol Usuario Básico en el módulo de Tickets, contrastando los resultados frente a umbrales de servicio predefinidos.
-
-### 3.2 Objetivos Específicos
-1. Medir la latencia basal del sistema (p50, p95, p99) con tráfico representativo de uso regular (5 RPS).
-2. Identificar el umbral donde la experiencia del usuario se degrada por encolamiento de solicitudes (12 a 25 RPS).
-3. Determinar el punto de saturación extrema y tasa de fallos bajo estrés severo (40 RPS).
-4. Proporcionar recomendaciones de optimización de infraestructura y software respaldadas por evidencia técnica.
-
-### 3.3 Alcance
-- **Incluido:** Pruebas sobre 3 endpoints REST de lectura frecuente para el rol Estudiante, autenticados mediante token Bearer JWT.
-- **Excluido:** Pruebas de mutación masiva (`POST`/`PUT` de creación de tickets) para evitar inundar la base de datos de producción con registros basura (regla ética de no alteración de datos).
+**Recomendación general:** la capa de acceso del rol Rectoría es **robusta** para el uso esperado. Para dimensionar la capacidad de las **operaciones autenticadas de avales** (consultas con base de datos) se requiere una prueba con sesión de Rectoría dentro de una ventana autorizada.
 
 ---
 
-## 4. Sistema Bajo Prueba y Escenarios
+## 3. Objetivos y alcance
 
-El sistema bajo prueba es el backend de NOVA desplegado en `https://nova.uniautonoma.edu.co/api/`. Se seleccionaron 3 endpoints críticos que componen la carga típica generada por un estudiante al ingresar a gestionar solicitudes:
+**Objetivo.** Medir la capacidad de respuesta y buscar el punto de degradación de la capa de entrada de UniDoc que utiliza el rol Rectoría, frente a criterios de aceptación definidos de antemano.
 
-| Identificador Endpoint | Ruta REST | Método | Justificación de Representatividad |
-| :--- | :--- | :---: | :--- |
-| **EP-01 (Perfil)** | `/api/users/perfil/` | `GET` | Se invoca inmediatamente tras el login para renderizar el encabezado, nombre y permisos del estudiante. Valida sesión en base de datos. |
-| **EP-02 (Listado Tickets)** | `/api/pqrs/tickets/` | `GET` | Consulta principal del módulo de tickets. Realiza consultas relacionales con filtros por usuario, área y estado de tickets. |
-| **EP-03 (Catálogo Áreas)** | `/api/pqrs/dependencies/` | `GET` | Invocado al abrir el dashboard y al desplegar el formulario de radicación de tickets para listar las dependencias de la universidad. |
+**Incluido:** endpoints HTTP **públicos** de UniDoc:
+- `GET /convocatorias-app/inicio-sesion` (pantalla de acceso de Rectoría).
+- `GET /convocatorias-app` (portal de convocatorias).
 
----
-
-## 5. Entorno de Pruebas
-
-### 5.1 Máquina Cliente (Generador de Carga)
-- **Sistema Operativo:** Windows 11 Pro 64-bit (Build 10.0.26200)
-- **CPU:** AMD Ryzen 5 9600X (6 núcleos físicos, 12 hilos lógicos, 3.9 - 5.4 GHz)
-- **Memoria RAM:** 15.11 GB DDR5 (RAM utilizada por el generador: < 200 MB)
-- **Herramienta de Carga:** Motor asíncrono en Node.js de microsegundos con HTTP Keep-Alive persistente y soporte para exportación a planes de JMeter (`Plan_Rendimiento_Nova.jmx`) y Vegeta (`targets.txt`).
-- **Conectividad:** Conexión de fibra óptica dedicada, latencia RTT de red base: ~18-25 ms.
-
-### 5.2 Servidor Bajo Prueba
-- **Servidor Web / Reverse Proxy:** Nginx (identificado en cabecera `Server: nginx`)
-- **Servidor de Aplicación:** WSGI Gunicorn / Django REST Framework
-- **Autenticación:** JSON Web Token (`Authorization: Bearer <token>`)
+**Excluido y por qué:**
+- Las **APIs autenticadas de Rectoría** (`/convocatorias-app/api/rectoria/...`): requieren un token emitido tras el login con Google institucional, no disponible para generación de carga.
+- Operaciones de **otorgar/revocar avales** bajo carga: prohibidas por no alterar datos reales.
+- Pruebas por encima del tope prudente de 20 RPS fijado por el equipo (sección 6.1).
 
 ---
 
-## 6. Criterios de Aceptación
+## 4. Sistema bajo prueba y escenarios
 
-Antes de iniciar la ejecución, se definieron los siguientes umbrales de aceptación basados en estándares de la industria para aplicaciones web educativas:
-
-| Métrica | Umbral en Carga Normal (<= 12 RPS) | Umbral en Estrés (25 - 40 RPS) | Justificación |
-| :--- | :---: | :---: | :--- |
-| **Percentil 95 (p95)** | **< 800 ms** | **< 3,000 ms** | Tiempos superiores a 1 segundo generan percepción de lentitud; superiores a 3 segundos generan abandono de navegación. |
-| **Percentil 50 (Mediana)** | **< 400 ms** | **< 1,500 ms** | Representa la experiencia típica del 50% de las solicitudes. |
-| **Tasa de Errores** | **0.00 %** | **< 5.00 %** | En condiciones normales no deben existir errores; en estrés se tolera hasta un 5% de saturación momentánea. |
-| **RPS Real vs Objetivo** | **>= 95 %** | **>= 80 %** | El servidor debe ser capaz de procesar el volumen de transacciones inyectado sin congelar el socket. |
+El sistema es el frontend/proxy de NOVA (Nginx) que sirve UniDoc. Los dos endpoints son **representativos del inicio de la jornada del rol Rectoría**: todo usuario de Rectoría carga primero la pantalla de acceso y el portal antes de autenticarse. Miden la capacidad del servidor web y la entrega del SPA, el primer punto que percibe el usuario.
 
 ---
 
-## 7. Diseño de las Pruebas
+## 5. Entorno de pruebas
 
-Se diseñó una prueba de carga escalonada dividida en **4 niveles de intensidad creciente**, con una duración constante de **15 segundos por escalón** y un intervalo de estabilización de 3 segundos entre niveles:
+| Elemento | Valor |
+|---|---|
+| Máquina cliente (generador de carga) | Equipo del equipo G1 — Windows 11 (64 bits) |
+| Conectividad | Internet público hacia el dominio institucional (incluye salto WAN) |
+| Servidor bajo prueba | NOVA — Nginx (cabecera `Server: nginx`) como proxy inverso |
+| Herramienta | **Vegeta** (línea de comandos) con salida JSON; artefactos `.bin` conservados |
+| Fecha y hora de ejecución | 16/11/2026, 23:58:59 → 17/11/2026, 00:00:34 (America/Bogota) |
 
-```
-RPS
- 40 |                                                 +---------------+ (Nivel 4: 15s)
- 35 |                                                 |
- 30 |                                                 |
- 25 |                                 +---------------+ (Nivel 3: 15s)
- 20 |                                 |
- 15 |                                 |
- 12 |                 +---------------+ (Nivel 2: 15s)
- 10 |                 |
-  5 | +---------------+ (Nivel 1: 15s)
-  0 +-----------------+---------------+---------------+---------------+-----> Tiempo
-      0s             15s             30s             45s             60s
-```
+---
 
-- **Nivel 1 (Línea Base):** 5 RPS (75 peticiones totales). Simula el uso normal de un grupo pequeño de estudiantes navegando simultáneamente.
-- **Nivel 2 (Carga Normal Esperada):** 12 RPS (180 peticiones totales). Simula la concurrencia estándar en un horario pico habitual de clase.
-- **Nivel 3 (Estrés Moderado):** 25 RPS (375 peticiones totales). Simula concurrencia elevada (inicio de jornadas de registro).
-- **Nivel 4 (Pico / Estrés Alto):** 40 RPS (600 peticiones totales). Simula sobredemanda masiva institucional para determinar el punto de colapso.
+## 6. Criterios de aceptación
+
+Definidos **antes** de ejecutar:
+
+| Métrica | Umbral carga normal | Umbral estrés | Justificación |
+|---|---|---|---|
+| p95 de latencia | < 800 ms | < 3 000 ms | > 1 s se percibe lento; > 3 s provoca abandono |
+| p50 (mediana) | < 400 ms | < 1 500 ms | Experiencia del 50 % de las solicitudes |
+| Tasa de errores | 0,00 % | < 5,00 % | Sin errores en uso normal; tolerancia mínima en estrés |
+| RPS real / objetivo | ≥ 95 % | ≥ 80 % | El servidor debe sostener el volumen inyectado |
+
+### 6.1 Límites y ventana adoptados por el equipo
+El docente **no fijó** ventana ni límite máximo de carga para este grupo. Por responsabilidad y para no afectar el servicio en producción, el equipo adoptó: **máximo 20 RPS**, escalones cortos de **20 s**, y **parada inmediata** si un nivel superaba 5 % de error o p95 > 3 s. Estos valores se mantienen por debajo del punto de colapso de la medición de referencia (Anexo A, 40 RPS → 504). La corrida se realizó cerca de medianoche (bajo uso).
+
+---
+
+## 7. Diseño de las pruebas
+
+Prueba escalonada, **4 niveles ascendentes**, 20 s por nivel, con 5 s de estabilización entre niveles:
+
+| Nivel | ID | Tipo | RPS objetivo | Duración |
+|---|---|---|---|---|
+| 1 | REC-PF-01 | Carga (línea base) | 5 | 20 s |
+| 2 | REC-PF-02 | Carga esperada | 10 | 20 s |
+| 3 | REC-PF-03 | Estrés moderado | 15 | 20 s |
+| 4 | REC-PF-04 | Estrés | 20 | 20 s |
 
 ---
 
 ## 8. Ejecución
 
-Las pruebas se ejecutaron mediante el motor de benchmarking parametrizado. Durante la ejecución se registraron los siguientes eventos:
-- En los Niveles 1 y 2, las respuestas llegaron de manera inmediata y fluida, sin fluctuaciones en la conexión TCP.
-- A partir del segundo 5 del Nivel 3, se evidenció un incremento notable en el tiempo de retención de conexiones abiertas en el servidor, elevando los tiempos de respuesta pero sin generar caídas de socket.
-- En el Nivel 4, el buffer de workers de Gunicorn se llenó rápidamente; transcurridos 10 segundos, Nginx comenzó a cerrar conexiones devolviendo códigos `504 Gateway Timeout` al no recibir respuesta del backend en el tiempo límite configurado.
+Se ejecutó con el script `EJECUTAR_RENDIMIENTO.bat`, que por cada nivel lanza `vegeta attack` (con `-targets=rendimiento/targets_unidoc.txt -rate=<n>/s -duration=20s`) y guarda el binario de resultados; los reportes JSON se obtuvieron de esos binarios con `vegeta report -type=json`. No se registraron incidentes de red durante la corrida. Las 1 000 peticiones se completaron según lo planificado.
 
 ---
 
-## 9. Resultados Reales
+## 9. Resultados
 
-### 9.1 Tabla Consolidada por Nivel de Carga
+### 9.1 Tabla consolidada por nivel
 
-| Métrica de Rendimiento | Nivel 1 (5 RPS) | Nivel 2 (12 RPS) | Nivel 3 (25 RPS) | Nivel 4 (40 RPS) |
-| :--- | :---: | :---: | :---: | :---: |
-| **RPS Objetivo** | 5 RPS | 12 RPS | 25 RPS | 40 RPS |
-| **Duración del Escalón** | 15.0 s | 15.0 s | 15.0 s | 15.0 s |
-| **Peticiones Totales Inyectadas** | 75 | 180 | 375 | 600 |
-| **Peticiones Exitosas (200 OK)** | 75 (100%) | 180 (100%) | 375 (100%) | 112 (18.67%) |
-| **Peticiones Fallidas (504 Timeout)**| 0 (0%) | 0 (0%) | 0 (0%) | **488 (81.33%)** |
-| **Latencia Mínima** | 112 ms | 113 ms | 135 ms | 231 ms |
-| **Latencia Promedio** | 148 ms | 172 ms | 5,869 ms | 9,065 ms |
-| **Mediana (p50)** | **147 ms** | **163 ms** | **6,491 ms** | **10,045 ms** |
-| **Percentil 95 (p95)** | **181 ms** | **219 ms** | **9,243 ms** | **10,058 ms** |
-| **Percentil 99 (p99)** | **193 ms** | **235 ms** | **9,406 ms** | **10,063 ms** |
-| **Latencia Máxima** | 193 ms | 242 ms | 9,498 ms | 11,069 ms |
-| **Rendimiento Real (Throughput)** | **5.01 RPS** | **11.92 RPS** | **17.64 RPS** | **23.97 RPS** |
-| **Tasa de Errores (%)** | **0.00 %** | **0.00 %** | **0.00 %** | **81.33 %** |
+| Métrica | REC-PF-01 (5 RPS) | REC-PF-02 (10 RPS) | REC-PF-03 (15 RPS) | REC-PF-04 (20 RPS) |
+|---|---|---|---|---|
+| Peticiones totales | 100 | 200 | 300 | 400 |
+| Exitosas (200 OK) | 100 (100 %) | 200 (100 %) | 300 (100 %) | 400 (100 %) |
+| Latencia mínima | 38 ms | 37 ms | 41 ms | 47 ms |
+| Latencia media | 77 ms | 78 ms | 78 ms | 86 ms |
+| **p50 (mediana)** | **86 ms** | **83 ms** | **85 ms** | **92 ms** |
+| **p95** | **100 ms** | **112 ms** | **116 ms** | **127 ms** |
+| **p99** | **340 ms** | **131 ms** | **136 ms** | **153 ms** |
+| Latencia máxima | 410 ms | 146 ms | 142 ms | 191 ms |
+| Throughput real | 5,03 RPS | 10,00 RPS | 14,98 RPS | 19,93 RPS |
+| Tasa de errores | 0,00 % | 0,00 % | 0,00 % | 0,00 % |
+| Códigos HTTP | 200×100 | 200×200 | 200×300 | 200×400 |
 
----
+### 9.2 Gráficas
 
-## 10. Análisis de Resultados
+![Latencia por nivel de carga](rendimiento/graficas/latencias.png){width=85%}
 
-### 10.1 Evaluación Frente a Criterios de Aceptación
+![Throughput objetivo vs real](rendimiento/graficas/throughput.png){width=85%}
 
-| Nivel | p95 Real vs Criterio | Tasa de Error vs Criterio | Estado de Cumplimiento |
-| :---: | :---: | :---: | :---: |
-| **Nivel 1 (5 RPS)** | 181 ms (Criterio: < 800 ms) | 0.00 % (Criterio: 0.00 %) | **CUMPLE SATISFACTORIAMENTE** |
-| **Nivel 2 (12 RPS)**| 219 ms (Criterio: < 800 ms) | 0.00 % (Criterio: 0.00 %) | **CUMPLE SATISFACTORIAMENTE** |
-| **Nivel 3 (25 RPS)**| 9,243 ms (Criterio: < 3,000 ms) | 0.00 % (Criterio: < 5.00 %) | **NO CUMPLE EN LATENCIA** |
-| **Nivel 4 (40 RPS)**| 10,058 ms (Criterio: < 3,000 ms)| 81.33 % (Criterio: < 5.00 %) | **COLAPSO CRÍTICO** |
-
-### 10.2 Análisis de Cuello de Botella
-1. **Comportamiento Concurrente:** El backend de Django en NOVA procesa de manera lineal y óptima hasta aproximadamente 15 RPS. A partir de allí, el Throughput real se desacopla del objetivo (a 25 RPS objetivo solo entrega 17.64 RPS; a 40 RPS objetivo se estanca en 23.97 RPS).
-2. **Causa Raíz del Bloqueo:** La alta latencia acumulada (mediana de 6.4 segundos en Nivel 3 y 10 segundos en Nivel 4) es síntoma característico de **agotamiento de workers síncronos de Gunicorn**. Al no contar con suficientes procesos de atención, las nuevas peticiones esperan en la cola de Nginx. Cuando la cola sobrepasa el timeout por defecto (60s o 10s según configuración proxy), Nginx descarta la petición devolviendo `504 Gateway Timeout`.
-3. **Comportamiento de Recuperación:** Una vez cesó la inyección de carga de 40 RPS, el servidor tardó aproximadamente **8 a 12 segundos** en drenar la cola de solicitudes pendientes y retornar a tiempos basales de 150 ms, demostrando que no hubo corrupción de memoria en el proceso, sino saturación transitoria de sockets.
+Fuente: `rendimiento/resultados/nivel_{5,10,15,20}.json` (salida de Vegeta).
 
 ---
 
-## 11. Conclusiones y Recomendaciones
+## 10. Análisis de resultados
+
+### 10.1 Cumplimiento frente a los criterios de aceptación
+
+| Nivel | p95 real vs criterio | Error vs criterio | RPS real/objetivo | Estado |
+|---|---|---|---|---|
+| 1 (5 RPS) | 100 ms (< 800) | 0 % (= 0 %) | 100,6 % | **CUMPLE** |
+| 2 (10 RPS) | 112 ms (< 800) | 0 % (= 0 %) | 100,0 % | **CUMPLE** |
+| 3 (15 RPS) | 116 ms (< 3 000) | 0 % (< 5 %) | 99,9 % | **CUMPLE** |
+| 4 (20 RPS) | 127 ms (< 3 000) | 0 % (< 5 %) | 99,6 % | **CUMPLE** |
+
+### 10.2 Lectura técnica
+
+- **Estabilidad.** La latencia media y la mediana apenas se mueven entre 5 y 20 RPS (p50 de 83–92 ms), y el p95 sube de forma muy suave (100 → 127 ms). No hay señales de encolamiento ni de saturación en este rango.
+- **Punto de degradación / ruptura.** **No se alcanzó** dentro del tope prudente de 20 RPS; la capa pública de UniDoc tiene capacidad por encima de ese nivel. Determinar el punto exacto exigiría subir la carga, lo que no se hizo por no contar con ventana autorizada.
+- **Outlier del p99 en el Nivel 1.** El p99 del primer nivel (340 ms, máx. 410 ms) es mayor que en los niveles siguientes (~130–150 ms). Es un efecto de **arranque en frío** (primeras conexiones TLS/keep-alive del inicio de la corrida), no de carga: el mínimo fue 38 ms y la media 77 ms. A partir del Nivel 2, con las conexiones ya establecidas, la cola alta de latencias baja.
+- **Comparación con la referencia (Anexo A).** La medición previa sobre los endpoints **autenticados** del módulo Tickets colapsó a 40 RPS (81 % de 504). La diferencia es esperable: aquí se probó la **capa pública liviana** y hasta 20 RPS; aquellos endpoints ejecutan lógica y consultas a base de datos. Por tanto, **la capacidad de las operaciones autenticadas de avales sigue sin medirse**.
+
+---
+
+## 11. Conclusiones y recomendaciones
 
 ### 11.1 Conclusiones
-1. La plataforma NOVA soporta de forma holgada el tráfico habitual de consulta de tickets (hasta 12 transacciones por segundo sostenidas con latencias menores a 250 ms).
-2. El sistema presenta una **barrera crítica de capacidad en 24 RPS**, a partir de la cual deja de atender a más del 80% de los usuarios.
-3. El módulo de Tickets no resistiría un evento institucional masivo sin medidas previas de escalamiento.
+1. La capa de acceso pública de UniDoc **cumple todos los criterios** de aceptación en los 4 niveles, con 0 % de errores y p95 ≤ 127 ms.
+2. **Capacidad estimada:** sostiene al menos **20 RPS** con holgura en los endpoints de entrada; el punto de ruptura de esa capa está por encima de 20 RPS y no se determinó.
+3. La prueba **no cubre** el rendimiento de las operaciones autenticadas de avales, que es donde el servidor compartido mostró límites en la referencia.
 
-### 11.2 Plan de Remediación Priorizado
-1. **Prioridad Alta — Optimización de Workers:** Ajustar la configuración de Gunicorn para utilizar workers asíncronos (`gevent` o `uvicorn` si se migra a ASGI) o incrementar los workers síncronos a `(2 * CPU cores) + 1`.
-2. **Prioridad Alta — Pooling de Base de Datos:** Instalar `pgBouncer` para evitar que la sobrecarga de conexiones destruya el pool de PostgreSQL en ráfagas de tráfico.
-3. **Prioridad Media — Caché de Catálogos:** Implementar caché en Redis con TTL de 30 minutos para el endpoint `/api/pqrs/dependencies/`, reduciendo el 33% del impacto en base de datos.
+### 11.2 Recomendaciones
+1. Para dimensionar las operaciones de avales, ejecutar una prueba con **sesión de Rectoría** (token válido) sobre sus APIs, dentro de una **ventana autorizada por el docente/administrador**.
+2. Mantener la medición de la capa pública como **línea base** para detectar regresiones.
+3. Si se planean eventos de alta concurrencia, aplicar las mejoras de la referencia (workers del backend, *pooling* de base de datos, caché de catálogos).
 
 ---
 
-## 12. Riesgos y Limitaciones
-1. **Concurrencia de Servidor Compartido:** El servidor aloja conjuntamente los módulos de Planes de Aula, UniDoc y Tickets. Un pico de carga en Planes de Aula impactaría negativamente el rendimiento de Tickets.
-2. **Entorno de Red Externa:** Las pruebas se realizaron a través de Internet público hacia el dominio institucional, por lo que la latencia incluye el salto WAN (~20 ms).
+## 12. Riesgos y limitaciones
+
+1. **Servidor compartido:** UniDoc, Tickets y Planes de Aula comparten infraestructura; un pico en otro módulo afecta a Rectoría.
+2. **Cliente/red:** la latencia incluye el salto WAN; parte del retardo es de red, no del servidor.
+3. **Alcance de medición:** solo endpoints públicos; las APIs autenticadas de avales quedan sin medir por no disponer de sesión de Rectoría automatizable para carga.
+4. **Tope prudente:** al no haber ventana autorizada, se limitó a 20 RPS; por eso no se observó el punto de ruptura de la capa pública.
 
 ---
 
 ## 13. Anexos
-- **Plan de Pruebas de Apache JMeter:** [Plan_Rendimiento_Nova.jmx](file:///c:/Users/USUARIO/Desktop/nova-qa-final/Plan_Rendimiento_Nova.jmx) (parametrizado con `${TOKEN}`).
-- **Archivo de Objetivos para Vegeta:** [targets.txt](file:///c:/Users/USUARIO/Desktop/nova-qa-final/targets.txt) (formateado con cabeceras `Authorization: Bearer ${TOKEN}`).
-- **Resultados JSON Brutos:** `benchmark_results.json`.
+
+### Anexo A — Medición de referencia del servidor (módulo Tickets, herramienta Node) — NO es resultado de Rectoría
+
+Medición real previa sobre endpoints del módulo **Tickets** con un motor de carga en Node. Se incluye **solo como referencia** del techo del servidor compartido. Datos crudos en `_descartado/recon_tickets/benchmark_results.json`.
+
+| Nivel | RPS obj. | Peticiones | p50 | p95 | p99 | Throughput real | Errores | Códigos |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 5 | 75 | 147 ms | 181 ms | 193 ms | 5,01 RPS | 0 % | 200×75 |
+| 2 | 12 | 180 | 163 ms | 219 ms | 235 ms | 11,92 RPS | 0 % | 200×180 |
+| 3 | 25 | 375 | 6 491 ms | 9 243 ms | 9 406 ms | 17,64 RPS | 0 % | 200×375 |
+| 4 | 40 | 600 | 10 045 ms | 10 058 ms | 10 063 ms | 23,97 RPS | **81,33 %** | 200×112 / **504×488** |
+
+Lectura: los endpoints autenticados se degradan hacia 25 RPS y colapsan a 40 RPS. Contrasta con la capa pública probada en este informe, estable hasta 20 RPS.
+
+### Anexo B — Artefactos
+- `Plan_Rendimiento_Nova.jmx` (JMeter, endpoints públicos de UniDoc, parametrizable).
+- `rendimiento/targets_unidoc.txt`, `rendimiento/run_vegeta.*`, `EJECUTAR_RENDIMIENTO.bat`, `GENERAR_JSON.bat`.
+- Resultados: `rendimiento/resultados/nivel_{5,10,15,20}.json` y `.bin`.
+- Gráficas: `rendimiento/graficas/latencias.png`, `throughput.png`.

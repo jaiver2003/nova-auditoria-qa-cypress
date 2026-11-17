@@ -1,0 +1,110 @@
+{
+  "origen": "https://nova.uniautonoma.edu.co",
+  "localStorage": [
+    {
+      "clave": "usuario",
+      "longitud": 422,
+      "pareceJWT": false
+    },
+    {
+      "clave": "a11y_prefs",
+      "longitud": 86,
+      "pareceJWT": false
+    },
+    {
+      "clave": "_at_shared",
+      "longitud": 277,
+      "pareceJWT": true
+    },
+    {
+      "clave": "refresh_token",
+      "longitud": 279,
+      "pareceJWT": true
+    }
+  ],
+  "sessionStorage": [
+    {
+      "clave": "nova_chat_v1",
+      "longitud": 2,
+      "pareceJWT": false
+    },
+    {
+      "clave": "access_token",
+      "longitud": 277,
+      "pareceJWT": true
+    }
+  ],
+  "cookies": [
+    {
+      "nombre": "g_state",
+      "httpOnly": false,
+      "secure": false,
+      "expiry": 1810430855
+    }
+  ],
+  "autenticacionEnPeticionesApi": [
+    "none",
+    "Cookie",
+    "Bearer <token>"
+  ],
+  "peticionesObservadas": [
+    {
+      "phase": "login",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/platform-stats/",
+      "auth": "none",
+      "status": 200
+    },
+    {
+      "phase": "login",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/platform-feedback/",
+      "auth": "none",
+      "status": 200
+    },
+    {
+      "phase": "login",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/hero-images/",
+      "auth": "none",
+      "status": 200
+    },
+    {
+      "phase": "login",
+      "method": "POST",
+      "url": "https://nova.uniautonoma.edu.co/api/login/",
+      "auth": "Cookie",
+      "status": 200
+    },
+    {
+      "phase": "login",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/users/perfil/",
+      "auth": "Bearer <token>",
+      "status": 200
+    },
+    {
+      "phase": "login",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/tickets/",
+      "auth": "Bearer <token>",
+      "status": 200
+    },
+    {
+      "phase": "inicio",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/tickets/activity-feed/",
+      "auth": "Bearer <token>",
+      "status": 200
+    },
+    {
+      "phase": "inicio",
+      "method": "GET",
+      "url": "https://nova.uniautonoma.edu.co/api/pqrs/tickets/",
+      "auth": "Bearer <token>",
+      "status": 200
+    }
+  ],
+  "validacionRecursoProtegido": "Pendiente: identificar un recurso del rol y comprobar que exige autenticación. Un 2xx aislado no demuestra acceso.",
+  "visibleBotonIngresar": false
+}

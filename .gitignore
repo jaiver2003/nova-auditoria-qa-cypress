@@ -1,15 +1,26 @@
+# Credenciales y secretos (NUNCA versionar)
 cypress.env.json
+.auth/
+
+# Dependencias
 node_modules/
+
+# Evidencia pesada y artefactos de ejecución (se entregan como anexo aparte)
 cypress/videos/
 cypress/videos_previos/
-evidencias/
 cypress/screenshots/
 cypress/downloads/
 cypress/.session/
-session_mecanismo.json
-.auth/
-recon_dom.json
-recon_tickets_perfil.json
-benchmark_results.json
-security_inspection.json
-endpoints_detectados.json
+evidencias/
+
+# Material fuera de alcance / descartado
+_descartado/
+
+# Paquete de entrega (copia de los PDF y anexos; no se versiona)
+ENTREGA_FINAL/
+
+*.zip
+.writetest
+.~lock.*
+vulnerabilidades/greenbone/
+*.bin
