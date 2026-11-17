@@ -1,0 +1,38 @@
+{
+  "aplicacion": "UniDoc",
+  "rol": "Rectoría",
+  "origen": "https://nova.uniautonoma.edu.co",
+  "paginaAcceso": "/convocatorias-app/inicio-sesion",
+  "paginaAvales": "/convocatorias-app/rectoria/avales",
+  "accesoDeclarado": "Google institucional",
+  "fuenteRutas": "Confirmadas por el usuario",
+  "apiConfirmada": true,
+  "autenticacionApi": "Pendiente de identificar; no se han copiado secretos",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/convocatorias-app/api/rectoria/obtener-convocatorias",
+      "statusObservado": 200,
+      "fuente": "Captura del usuario en Network > General"
+    },
+    {
+      "method": "GET",
+      "path": "/convocatorias-app/api/rectoria/convocatorias",
+      "statusObservado": 200,
+      "fuente": "Captura del usuario en Network > General"
+    },
+    {
+      "method": "GET",
+      "path": "/convocatorias-app/api/rectoria/usuarios/6/avales",
+      "statusObservado": 200,
+      "fuente": "Captura del usuario en Network > General",
+      "nota": "6 es el identificador observado. No enumerar otros usuarios; usar únicamente datos autorizados para las pruebas."
+    }
+  ],
+  "flujosConsultaCandidatos": [
+    "Panel de avales y convocatorias",
+    "Listado de postulantes de una convocatoria",
+    "Filtros y orden por puntaje"
+  ],
+  "nota": "Pendiente de observar qué flujos consultan el servidor y cuáles filtran localmente. No reutilizar los endpoints de Estudiante/Tickets."
+}

@@ -1,6 +1,8 @@
 cypress.env.json
 node_modules/
 cypress/videos/
+cypress/videos_previos/
+evidencias/
 cypress/screenshots/
 cypress/downloads/
 cypress/.session/

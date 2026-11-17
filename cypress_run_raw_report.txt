@@ -1,0 +1,218 @@
+
+Warning: The allowCypressEnv configuration option is enabled. This allows any browser code to read values from Cypress.env(). This is insecure and will be removed in a future major version.
+
+1. Replace Cypress.env() calls with cy.env() (for sensitive values) or Cypress.expose() (for public configuration)
+2. Set allowCypressEnv: false in your Cypress configuration to disable Cypress.env()
+
+Learn more: https://on.cypress.io/cypress-env-migration
+
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        15.21.2                                                                        │
+  │ Browser:        Electron 138 (headless)                                                        │
+  │ Node Version:   v25.8.1 (C:\Program Files\nodejs\node.exe)                                     │
+  │ Specs:          5 found (01_autenticacion.cy.js, 02_tickets_estudiante.cy.js, 03_quiz_y_perfil │
+  │                 .cy.js, 04_permisos_rol.cy.js, 05_rectoria_convocatorias.cy.js)                │
+  │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  01_autenticacion.cy.js                                                          (1 of 5)
+
+
+  Módulo 01: Autenticación y Control de Sesión (Estudiante)
+    √ CP-01 (Positivo): Login exitoso con credenciales válidas y verificación de dashboard (3971ms)
+    √ CP-02 (Negativo): Intento de login con contraseña incorrecta (3157ms)
+    √ CP-03 (Negativo): Intento de login con campos obligatorios vacíos (244ms)
+    √ CP-04 (Positivo): Cierre de sesión exitoso con botón Salir y bloqueo de navegación (6041ms)
+
+
+  4 passing (13s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     13 seconds                                                                       │
+  │ Spec Ran:     01_autenticacion.cy.js                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: C:\Users\USUARIO\Desktop\nova-qa-final\cypress\videos\01_autenticacion.cy.js.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  02_tickets_estudiante.cy.js                                                     (2 of 5)
+
+
+  Módulo 02: Gestión de Tickets - Rol Estudiante
+    √ CP-05 (Positivo): Consulta de "Mis Tickets" y visualización del detalle de TI-20261113-7BEB1D57 (7901ms)
+    √ CP-06 (Positivo): Apertura y validación de campos del formulario "Enviar ticket a un área" (6958ms)
+    √ CP-07 (Negativo): Intento de envío del formulario de nuevo ticket con campos vacíos (7579ms)
+
+
+  3 passing (23s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        3                                                                                │
+  │ Passing:      3                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     22 seconds                                                                       │
+  │ Spec Ran:     02_tickets_estudiante.cy.js                                                      │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: C:\Users\USUARIO\Desktop\nova-qa-final\cypress\videos\02_tickets_estudiante.cy.js.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  03_quiz_y_perfil.cy.js                                                          (3 of 5)
+
+
+  Módulo 03: Quiz y Perfil de Estudiante
+    √ CP-08 (Negativo): Ingreso de PIN de Quiz inválido y verificación de alerta de error (7357ms)
+    √ CP-09 (Positivo): Visualización y validación de los datos del usuario en "Mi Perfil" (5390ms)
+
+
+  2 passing (13s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        2                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     12 seconds                                                                       │
+  │ Spec Ran:     03_quiz_y_perfil.cy.js                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: C:\Users\USUARIO\Desktop\nova-qa-final\cypress\videos\03_quiz_y_perfil.cy.js.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  04_permisos_rol.cy.js                                                           (4 of 5)
+
+
+  Módulo 04: Control de Permisos y Fronteras de Rol (Estudiante)
+    √ CP-10 (Permisos): Redirección de rol en /admin, respuesta 404 en rutas no encontradas y control de sesión (13044ms)
+    √ CP-11 (Permisos): Verificación de controles visibles en el detalle de ticket (TI-20261113-7BEB1D57) (7932ms)
+
+
+  2 passing (21s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        2                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     21 seconds                                                                       │
+  │ Spec Ran:     04_permisos_rol.cy.js                                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: C:\Users\USUARIO\Desktop\nova-qa-final\cypress\videos\04_permisos_rol.cy.js.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  05_rectoria_convocatorias.cy.js                                                 (5 of 5)
+
+
+  Módulo UniDoc Convocatorias - Rol Rectoría (Acceso, Seguridad y API)
+    √ REC-CP-01: Verificación de estructura del formulario de acceso UniDoc (879ms)
+    √ REC-CP-02: Control de acceso negativo - credenciales no autorizadas (1433ms)
+    √ REC-CP-03: Control de acceso negativo - intento con credenciales de otro rol (1677ms)
+    √ REC-CP-04: Frontera de seguridad - protección de ruta /convocatorias-app/rectoria/avales sin sesión (133ms)
+    √ REC-CP-05: Verificación de acceso al flujo de recuperación de contraseña (204ms)
+    √ REC-CP-06: Verificación de portal base de convocatorias públicas (172ms)
+    √ REC-CP-07: Verificación de navegación a registro de usuarios UniDoc (257ms)
+    √ REC-CP-08: Validación de seguridad API - Denegación en endpoint de convocatorias de Rectoría sin token (921ms)
+    √ REC-CP-09: Validación de seguridad API - Denegación en consulta de avales de usuarios sin sesión (790ms)
+    √ REC-CP-10: Validación reactiva de formulario vacío en login UniDoc (516ms)
+
+
+  10 passing (7s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        10                                                                               │
+  │ Passing:      10                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     7 seconds                                                                        │
+  │ Spec Ran:     05_rectoria_convocatorias.cy.js                                                  │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: C:\Users\USUARIO\Desktop\nova-qa-final\cypress\videos\05_rectoria_convocatorias.cy.js.mp4
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ √  01_autenticacion.cy.js                   00:13        4        4        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ √  02_tickets_estudiante.cy.js              00:22        3        3        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ √  03_quiz_y_perfil.cy.js                   00:12        2        2        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ √  04_permisos_rol.cy.js                    00:21        2        2        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ √  05_rectoria_convocatorias.cy.js          00:07       10       10        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    √  All specs passed!                        01:17       21       21        -        -        -  
+
