@@ -51,6 +51,7 @@ Se evaluó la seguridad de la plataforma NOVA (módulo UniDoc, rol **Rectoría**
 ## 3. Autorización y reglas de enfrentamiento
 
 - **Objetivo autorizado:** `https://nova.uniautonoma.edu.co/`, dentro del marco académico del Trabajo Final de Calidad de Software II.
+- **Fechas de ejecución:** inspección pasiva el 16/11/2026 (noche) y escaneo OpenVAS válido el 17/11/2026 (17:23 a 18:27 COT), dentro del plazo del trabajo (publicado el 9/11 y entregado el 17/11/2026).
 - **Autoridad:** el docente Jefferson Andrés Muñoz, como responsable del ejercicio sobre el sistema.
 - **Restricciones respetadas:** **sin explotación** de vulnerabilidades, **sin denegación de servicio**, sin acceso ni modificación de datos fuera del rol, sin enumeración de usuarios. La inspección se limitó a observar cabeceras HTTP de respuestas normales y el almacenamiento de sesión en el propio navegador.
 - **Marco legal:** Ley 1273 de 2009 (Colombia). Hallazgos confidenciales, solo para el docente.
@@ -93,6 +94,7 @@ Se evaluó la seguridad de la plataforma NOVA (módulo UniDoc, rol **Rectoría**
 **Certificado TLS (443):** sujeto `CN=uniautonoma.edu.co` (SAN `uniautonoma.edu.co` y `*.uniautonoma.edu.co`), emitido por *DigiCert Global G2 TLS RSA SHA256 2020 CA1*, RSA 2048 bits, firma `sha256WithRSAEncryption`, vigente del 08/09/2026 al 25/03/2027.
 
 **Inspección pasiva (resumen):**
+
 - Raíz `/` → 200, con `cache-control: no-store`, pero **sin** HSTS, CSP ni `X-Frame-Options`.
 - `GET /api/login/` → 405 con `Allow: POST, OPTIONS`; la API **sí** envía `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: same-origin`, `Cross-Origin-Opener-Policy: same-origin`.
 - `OPTIONS /api/login/` → 200 con `Access-Control-Allow-Private-Network: true`.
@@ -113,20 +115,20 @@ Se evaluó la seguridad de la plataforma NOVA (módulo UniDoc, rol **Rectoría**
 ## 6. Tabla de hallazgos
 
 | ID | Hallazgo | Fuente | CVE | CVSS | Severidad | Host/puerto | Estado |
-|---|---|---|---|---|---|---|---|
-| VULN-01 | Tokens de sesión JWT en Web Storage | Pasiva | — | 7,5 (est.) | **Alta** | nova…:443 | Confirmado |
-| VULN-02 | Ausencia de `Content-Security-Policy` en el frontend | Pasiva + OpenVAS | — | 6,1 (est.) | Media | nova…:443 | Confirmado por ambas |
-| VULN-03 | Ausencia de `Strict-Transport-Security` (HSTS) | Pasiva + OpenVAS | — | 5,3 (est.) | Media | nova…:443 | Confirmado por ambas |
-| VULN-04 | Ausencia de `X-Frame-Options`/`frame-ancestors` y de `X-Content-Type-Options` en el frontend | Pasiva + OpenVAS | — | 4,7 (est.) | Media | nova…:443 | Confirmado por ambas |
-| VULN-05 | CORS `Access-Control-Allow-Private-Network: true` | Pasiva | — | 5,3 (est.) | Media | nova…:443 | Confirmado |
-| VULN-06 | Se divulga el producto `nginx` (sin versión) | Pasiva + OpenVAS | — | 2,6 (est.) | Informativa | nova…:80/443 | Confirmado (versión no expuesta) |
-| VULN-07 | API de Rectoría podría responder 500 sin token | Pasiva | — | 3,1 (est.) | Baja | nova…:443 | Por confirmar |
-| VULN-08 | SSL/TLS: BREACH, compresión HTTP activa | OpenVAS | — (refs CERT-Bund/DFN-CERT) | **5,9** | Media | nova…:443 | Falso positivo probable (QoD 30 %) |
-| VULN-09 | TCP Sequence Number Approximation Reset DoS (abr. 2004) | OpenVAS | — (refs CERT-Bund) | **5,0** | Media | nova…:443 | Falso positivo probable (QoD 50 %) |
+|--------|------------------------------|-----------|-----|---------|-----------|----------|------------------|
+| VULN-01 | Tokens de sesión JWT en Web Storage | Pasiva | — | 7,5 (est.) | **Alta** | 443/tcp | Confirmado |
+| VULN-02 | Ausencia de `Content-Security-Policy` en el frontend | Ambas | — | 6,1 (est.) | Media | 443/tcp | Confirmado (ambas) |
+| VULN-03 | Ausencia de `Strict-Transport-Security` (HSTS) | Ambas | — | 5,3 (est.) | Media | 443/tcp | Confirmado (ambas) |
+| VULN-04 | Ausencia de `X-Frame-Options`/`frame-ancestors` y de `X-Content-Type-Options` en el frontend | Ambas | — | 4,7 (est.) | Media | 443/tcp | Confirmado (ambas) |
+| VULN-05 | CORS `Access-Control-Allow-Private-Network: true` | Pasiva | — | 5,3 (est.) | Media | 443/tcp | Confirmado |
+| VULN-06 | Se divulga el producto `nginx` (sin versión) | Ambas | — | 2,6 (est.) | Informativa | 80 y 443 | Confirmado |
+| VULN-07 | API de Rectoría podría responder 500 sin token | Pasiva | — | 3,1 (est.) | Baja | 443/tcp | Por confirmar |
+| VULN-08 | SSL/TLS: BREACH, compresión HTTP activa | OpenVAS | — | **5,9** | Media | 443/tcp | Falso positivo probable (QoD 30 %) |
+| VULN-09 | TCP Sequence Number Approximation Reset DoS (abr. 2004) | OpenVAS | — | **5,0** | Media | 443/tcp | Falso positivo probable (QoD 50 %) |
 | VULN-10 | TCP Timestamps: divulgación de información (uptime) | OpenVAS | — | **2,6** | Baja | general/tcp | Confirmado (QoD 80 %) |
-| VULN-11 | Enumeración de métodos HTTP en puerto 80 (GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE) | OpenVAS | — | 0,0 | Informativa | nova…:80 | Por verificar (probable redirección 30x) |
+| VULN-11 | Enumeración de métodos HTTP en puerto 80 (GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE) | OpenVAS | — | 0,0 | Informativa | 80/tcp | Por verificar (probable redirección 30x) |
 
-> Los CVSS de VULN-08, 09 y 10 son los reportados por OpenVAS. Los marcados *(est.)* son estimaciones manuales del equipo. OpenVAS no asoció **ningún CVE** a los servicios de NOVA.
+> Fuente: Pasiva = inspección pasiva; Ambas = inspección pasiva y OpenVAS. Los CVSS de VULN-08, 09 y 10 son los reportados por OpenVAS. Los marcados *(est.)* son estimaciones manuales del equipo. OpenVAS no asoció **ningún CVE** a los servicios de NOVA.
 
 ---
 

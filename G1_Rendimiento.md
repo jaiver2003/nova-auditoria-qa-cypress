@@ -68,8 +68,8 @@ El sistema es el frontend/proxy de NOVA (Nginx) que sirve UniDoc. Los dos endpoi
 
 | Elemento | Valor |
 |---|---|
-| Máquina cliente (generador de carga) | Equipo del equipo G1 — Windows 11 (64 bits) |
-| Conectividad | Internet público hacia el dominio institucional (incluye salto WAN) |
+| Máquina cliente (generador de carga) | Equipo de escritorio del equipo G1 — Windows 11 (64 bits), CPU AMD Ryzen 5 9600X de 6 núcleos, 15 GB de RAM (valor informado por Windows) |
+| Conectividad | Internet público hacia el dominio institucional (incluye salto WAN); el ancho de banda del enlace no se midió |
 | Servidor bajo prueba | NOVA — Nginx (cabecera `Server: nginx`) como proxy inverso |
 | Herramienta | **Vegeta** (línea de comandos) con salida JSON; artefactos `.bin` conservados |
 | Fecha y hora de ejecución | 16/11/2026, 23:58:59 → 17/11/2026, 00:00:34 (America/Bogota) |

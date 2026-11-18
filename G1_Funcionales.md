@@ -23,8 +23,6 @@
 - Jaiver Muñoz Muñoz
 - Martha Isabel España Gonzales
 
-> Verifique y complete los correos institucionales de cada integrante antes de la entrega.
-
 **Historial de versiones del documento**
 
 | Versión | Fecha | Autor | Cambio |
