@@ -77,3 +77,9 @@ _descartado/            Material fuera de alcance (Estudiante/Tickets) e informe
 1. **G1_Funcionales.pdf** — funcionales Cypress (10 automatizados + 7 manuales, trazabilidad, defectos).
 2. **G1_Rendimiento.pdf** — plan de carga/estrés prudente para UniDoc; resultados pendientes de la ventana autorizada; referencia del servidor compartido en anexo.
 3. **G1_Vulnerabilidades.pdf** — evaluación pasiva de seguridad (hallazgos reales) + guía para el escaneo OpenVAS pendiente.
+
+
+## Ejecución de Martha (17/11/2026)
+Ejecuté `npx cypress run` en mi copia del repositorio con Cypress 15.21.2 (Electron 138). Resultado: 10 pruebas automatizadas pasaron en 05_rectoria_convocatorias.cy.js (8 s) y 0 fallaron. Los 7 casos de 06_rectoria_avales_autenticado.cy.js quedaron pendientes porque son de ejecución manual con sesión autenticada.
+
+
